@@ -1,0 +1,1452 @@
+{
+  "id": "root",
+  "name": "KNOWLEDGE",
+  "type": "root",
+  "tag": "./",
+  "icon": "sprout",
+  "color": "#78716c",
+  "children": [
+    {
+      "id": "layer-1",
+      "name": "Root Knowledge",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "compass",
+      "color": "#9a8fc0",
+      "children": [
+        {
+          "id": "cat-1-1",
+          "name": "Mathematics",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-1-1-1",
+              "name": "Pure Mathematician",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-1-2",
+              "name": "Applied Mathematician",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-1-3",
+              "name": "Statistician",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-1-4",
+              "name": "Operations Research Analyst",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-1-5",
+              "name": "Cryptographer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-1-2",
+          "name": "Physics",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-1-2-1",
+              "name": "Theoretical Physicist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-2-2",
+              "name": "Experimental Physicist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-2-3",
+              "name": "Optical Physicist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-2-4",
+              "name": "Materials Physicist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-2-5",
+              "name": "Plasma / Quantum / Nuclear Physicist",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-1-3",
+          "name": "Chemistry",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-1-3-1",
+              "name": "Chemist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-3-2",
+              "name": "Analytical Chemist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-3-3",
+              "name": "Organic Chemist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-3-4",
+              "name": "Physical Chemist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-3-5",
+              "name": "Industrial Chemist",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-1-4",
+          "name": "Biology",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-1-4-1",
+              "name": "Biologist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-4-2",
+              "name": "Geneticist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-4-3",
+              "name": "Microbiologist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-4-4",
+              "name": "Neuroscientist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-4-5",
+              "name": "Biomedical Researcher",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-1-5",
+          "name": "Social Sciences",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-1-5-1",
+              "name": "Economist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-5-2",
+              "name": "Sociologist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-5-3",
+              "name": "Psychologist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-5-4",
+              "name": "Anthropologist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-5-5",
+              "name": "Political Scientist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-1-5-6",
+              "name": "Behavioral Scientist",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "layer-2",
+      "name": "Discovery Layer",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "microscope",
+      "color": "#7f9cc4",
+      "children": [
+        {
+          "id": "role-2-1",
+          "name": "Academic Researcher",
+          "type": "role",
+          "tag": ""
+        },
+        {
+          "id": "role-2-2",
+          "name": "Research Scientist",
+          "type": "role",
+          "tag": ""
+        },
+        {
+          "id": "role-2-3",
+          "name": "Laboratory Scientist",
+          "type": "role",
+          "tag": ""
+        },
+        {
+          "id": "role-2-4",
+          "name": "Research Engineer",
+          "type": "role",
+          "tag": ""
+        },
+        {
+          "id": "role-2-5",
+          "name": "Applied Scientist",
+          "type": "role",
+          "tag": ""
+        },
+        {
+          "id": "role-2-6",
+          "name": "R&D Engineer",
+          "type": "role",
+          "tag": ""
+        }
+      ]
+    },
+    {
+      "id": "layer-3",
+      "name": "Core Engineering Layer",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "wrench",
+      "color": "#6faab0",
+      "children": [
+        {
+          "id": "cat-3-1",
+          "name": "Mechanical Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-3-1-1",
+              "name": "Mechanical Design Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-1-2",
+              "name": "Manufacturing Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-1-3",
+              "name": "Thermal Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-1-4",
+              "name": "Automotive Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-1-5",
+              "name": "Aerospace Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-1-6",
+              "name": "Robotics Mechanical Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-1-7",
+              "name": "Mechatronics Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-3-2",
+          "name": "Electrical Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-3-2-1",
+              "name": "Electrical Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-2-2",
+              "name": "Electronics Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-2-3",
+              "name": "Power Systems Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-2-4",
+              "name": "Control Systems Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-2-5",
+              "name": "Signal Processing Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-2-6",
+              "name": "RF Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-2-7",
+              "name": "Telecommunications Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-2-8",
+              "name": "Embedded Hardware Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-3-3",
+          "name": "Chemical Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-3-3-1",
+              "name": "Chemical Process Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-3-2",
+              "name": "Petroleum Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-3-3",
+              "name": "Pharmaceutical Process Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-3-4",
+              "name": "Battery Process Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-3-5",
+              "name": "Food Process Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-3-6",
+              "name": "Environmental Process Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-3-4",
+          "name": "Materials Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-3-4-1",
+              "name": "Materials Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-4-2",
+              "name": "Metallurgical Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-4-3",
+              "name": "Semiconductor Materials Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-4-4",
+              "name": "Polymer Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-4-5",
+              "name": "Composite Materials Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-4-6",
+              "name": "Failure Analysis Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-3-5",
+          "name": "Civil Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-3-5-1",
+              "name": "Structural Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-5-2",
+              "name": "Transportation Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-5-3",
+              "name": "Geotechnical Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-5-4",
+              "name": "Water Resources Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-5-5",
+              "name": "Construction Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-5-6",
+              "name": "Urban Infrastructure Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-3-6",
+          "name": "Biomedical Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-3-6-1",
+              "name": "Biomedical Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-6-2",
+              "name": "Medical Device Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-6-3",
+              "name": "Biomechanics Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-6-4",
+              "name": "Bioinstrumentation Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-6-5",
+              "name": "Neural Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-3-6-6",
+              "name": "Rehabilitation Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "layer-4",
+      "name": "Computing Hardware Layer",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "cpu",
+      "color": "#74ab95",
+      "children": [
+        {
+          "id": "cat-4-1",
+          "name": "Computer Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-4-1-1",
+              "name": "Computer Hardware Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-1-2",
+              "name": "Computer Architecture Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-1-3",
+              "name": "FPGA Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-1-4",
+              "name": "Firmware Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-1-5",
+              "name": "Embedded Systems Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-1-6",
+              "name": "IoT Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-1-7",
+              "name": "Edge Computing Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-4-2",
+          "name": "Semiconductor Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-4-2-1",
+              "name": "Chip Design Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-2-2",
+              "name": "Verification Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-2-3",
+              "name": "ASIC Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-2-4",
+              "name": "VLSI Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-2-5",
+              "name": "Physical Design Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-2-6",
+              "name": "Semiconductor Process Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-4-3",
+          "name": "Network Hardware",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-4-3-1",
+              "name": "Network Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-3-2",
+              "name": "RF Systems Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-3-3",
+              "name": "Telecom Systems Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-4-3-4",
+              "name": "Wireless Communications Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "layer-5",
+      "name": "Computer Science & Systems Layer",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "binary",
+      "color": "#9aac72",
+      "children": [
+        {
+          "id": "cat-5-1",
+          "name": "Computer Science",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-5-1-1",
+              "name": "Computer Scientist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-1-2",
+              "name": "Algorithms Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-1-3",
+              "name": "Programming Language Researcher",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-1-4",
+              "name": "Distributed Systems Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-1-5",
+              "name": "Database Researcher",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-1-6",
+              "name": "Cryptography Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-5-2",
+          "name": "Systems Software",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-5-2-1",
+              "name": "Operating Systems Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-2-2",
+              "name": "Kernel Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-2-3",
+              "name": "Compiler Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-2-4",
+              "name": "Runtime Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-2-5",
+              "name": "Database Engine Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-2-6",
+              "name": "Storage Systems Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-2-7",
+              "name": "Networking Systems Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-5-3",
+          "name": "Cybersecurity",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-5-3-1",
+              "name": "Security Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-3-2",
+              "name": "Application Security Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-3-3",
+              "name": "Cloud Security Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-3-4",
+              "name": "Security Researcher",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-3-5",
+              "name": "Malware Analyst",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-3-6",
+              "name": "Cryptography Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-5-3-7",
+              "name": "Incident Response Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "layer-6",
+      "name": "Software Product Layer",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "layout",
+      "color": "#c7a866",
+      "children": [
+        {
+          "id": "cat-6-1",
+          "name": "Software Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-6-1-1",
+              "name": "Software Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-1-2",
+              "name": "Backend Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-1-3",
+              "name": "Frontend Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-1-4",
+              "name": "Full Stack Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-1-5",
+              "name": "Mobile Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-1-6",
+              "name": "Desktop Application Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-1-7",
+              "name": "API Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-1-8",
+              "name": "QA / Test Automation Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-6-2",
+          "name": "Product Infrastructure",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-6-2-1",
+              "name": "Cloud Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-2-2",
+              "name": "DevOps Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-2-3",
+              "name": "Platform Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-2-4",
+              "name": "Site Reliability Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-2-5",
+              "name": "Infrastructure Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-2-6",
+              "name": "Developer Experience Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-2-7",
+              "name": "Build & Release Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-6-3",
+          "name": "Product and UX",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-6-3-1",
+              "name": "Product Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-3-2",
+              "name": "UX Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-3-3",
+              "name": "UI Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-3-4",
+              "name": "Design Systems Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-3-5",
+              "name": "Technical Product Manager",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-6-3-6",
+              "name": "Solutions Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "layer-7",
+      "name": "Data Layer",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "database",
+      "color": "#c98a8a",
+      "children": [
+        {
+          "id": "cat-7-1",
+          "name": "Data Infrastructure",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-7-1-1",
+              "name": "Data Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-1-2",
+              "name": "Analytics Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-1-3",
+              "name": "Data Platform Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-1-4",
+              "name": "Database Administrator",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-1-5",
+              "name": "Data Warehouse Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-1-6",
+              "name": "Streaming Data Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-7-2",
+          "name": "Data Understanding",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-7-2-1",
+              "name": "Data Analyst",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-2-2",
+              "name": "Business Intelligence Analyst",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-2-3",
+              "name": "Product Analyst",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-2-4",
+              "name": "Quantitative Analyst",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-2-5",
+              "name": "Statistician",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-2-6",
+              "name": "Decision Scientist",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-7-3",
+          "name": "Data Modeling",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-7-3-1",
+              "name": "Data Scientist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-3-2",
+              "name": "Machine Learning Scientist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-3-3",
+              "name": "Econometrician",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-3-4",
+              "name": "Forecasting Scientist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-7-3-5",
+              "name": "Computational Scientist",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "layer-8",
+      "name": "Machine Learning & AI Layer",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "brain",
+      "color": "#c98ab0",
+      "children": [
+        {
+          "id": "cat-8-1",
+          "name": "Machine Learning",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-8-1-1",
+              "name": "Machine Learning Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-1-2",
+              "name": "Applied ML Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-1-3",
+              "name": "ML Research Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-1-4",
+              "name": "Recommendation Systems Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-8-2",
+          "name": "AI Product Engineering",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-8-2-1",
+              "name": "AI Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-2-2",
+              "name": "LLM Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-2-3",
+              "name": "AI Agents Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-2-4",
+              "name": "AI Product Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-8-3",
+          "name": "AI Platform & Infrastructure",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-8-3-1",
+              "name": "AI Infrastructure Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-3-2",
+              "name": "ML Platform Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-3-3",
+              "name": "GPU Infrastructure Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-3-4",
+              "name": "MLOps / LLMOps Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-8-4",
+          "name": "AI Research",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-8-4-1",
+              "name": "AI Research Scientist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-4-2",
+              "name": "Deep Learning Researcher",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-4-3",
+              "name": "Generative AI Researcher",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-8-5",
+          "name": "Forward-Deployed AI",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-8-5-1",
+              "name": "Forward-Deployed AI Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-8-5-2",
+              "name": "AI Solutions Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "layer-9",
+      "name": "Physical Intelligence Layer",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "eye",
+      "color": "#8a90c4",
+      "children": [
+        {
+          "id": "cat-9-1",
+          "name": "Computer Vision",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-9-1-1",
+              "name": "Computer Vision Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-1-2",
+              "name": "Perception Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-1-3",
+              "name": "Video Analytics Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-1-4",
+              "name": "OCR Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-1-5",
+              "name": "3D Vision Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-1-6",
+              "name": "SLAM Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-1-7",
+              "name": "Sensor Fusion Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-9-2",
+          "name": "Robotics",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-9-2-1",
+              "name": "Robotics Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-2-2",
+              "name": "Motion Planning Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-2-3",
+              "name": "Controls Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-2-4",
+              "name": "Localization Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-2-5",
+              "name": "Manipulation Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-2-6",
+              "name": "Autonomous Navigation Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-2-7",
+              "name": "Human-Robot Interaction Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-9-3",
+          "name": "Autonomous Systems",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-9-3-1",
+              "name": "Autonomous Vehicle Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-3-2",
+              "name": "Drone Software Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-3-3",
+              "name": "Flight Controls Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-3-4",
+              "name": "Autonomy Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-3-5",
+              "name": "Simulation Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-3-6",
+              "name": "Safety Engineer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-9-3-7",
+              "name": "Field Robotics Engineer",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

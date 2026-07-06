@@ -1,0 +1,28 @@
+[project]
+name = "healthrag"
+version = "0.1.0"
+description = "Career Tree RAG powered by Azure Foundry Local"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "chromadb>=0.6.0",
+    "sentence-transformers>=3.0.0",
+    "openai>=1.0.0",
+    "foundry-local-sdk>=1.2.0",
+]
+
+[project.scripts]
+career-rag-regenerate = "rag.regenerate:regenerate"
+career-rag-index = "rag.ingest:build_index"
+career-rag-retrieve = "rag.retrieve:main"
+career-rag-ask = "rag.ask:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["rag"]
+
+[tool.uv]
+package = true
