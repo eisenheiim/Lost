@@ -1,4 +1,8 @@
-"""Re-fetch career tree from ibz04.pro and write content + chunk files."""
+"""Re-fetch the career tree from ibz04.pro and write the JSON + human-readable md.
+
+Chunk building lives here (build_chunks) but is written to disk by ingest.py,
+which combines these tree chunks with the extra .md chunks into one file.
+"""
 
 from __future__ import annotations
 
@@ -11,7 +15,6 @@ from rag.config import (
     BOARD_JS_URL,
     CAREER_TREE_FILE,
     CAREER_TREE_MD,
-    CHUNKS_FILE,
     CONTENT_DIR,
     DATA_DIR,
     SOURCE_URL,
@@ -217,17 +220,12 @@ def regenerate() -> None:
         encoding="utf-8",
     )
 
-    chunks = build_chunks(paths)
-    with CHUNKS_FILE.open("w", encoding="utf-8") as f:
-        for chunk in chunks:
-            f.write(json.dumps(chunk, ensure_ascii=False) + "\n")
-
     CAREER_TREE_MD.write_text(write_career_tree_md(paths), encoding="utf-8")
 
     print("Wrote:")
     print(f"  {CAREER_TREE_MD}")
     print(f"  {CAREER_TREE_FILE}")
-    print(f"  {CHUNKS_FILE} ({len(chunks)} chunks)")
+    print(f"  ({len(paths)} paths — run 'career-rag-index' to build chunks + index)")
 
 
 if __name__ == "__main__":

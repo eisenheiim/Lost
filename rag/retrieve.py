@@ -22,7 +22,17 @@ def retrieve(
     top_k: int = TOP_K,
     layer: str | None = None,
     doc_type: str | None = None,
+    keep_ratio: float = 0.85,
+    min_score: float = 0.30,
 ) -> list[dict]:
+    """Retrieve context, dropping weak matches relative to the best hit.
+
+    We over-fetch, then keep only hits whose score is close to the top score
+    (>= top_score * keep_ratio) and above an absolute floor (min_score). This
+    removes low-relevance career-tree noise for questions that only need one
+    or two strong matches, while keeping all of them when several are relevant.
+    The single best hit is always kept.
+    """
     collection = get_collection()
     where: dict | None = None
     if layer and doc_type:
@@ -32,9 +42,10 @@ def retrieve(
     elif doc_type:
         where = {"doc_type": doc_type}
 
+    fetch_k = max(top_k * 3, 12)
     results = collection.query(
         query_texts=[query],
-        n_results=top_k,
+        n_results=fetch_k,
         where=where,
         include=["documents", "metadatas", "distances"],
     )
@@ -52,7 +63,15 @@ def retrieve(
                 "score": 1 - distance,
             }
         )
-    return hits
+
+    if not hits:
+        return hits
+
+    top_score = hits[0]["score"]
+    threshold = max(min_score, top_score * keep_ratio)
+    filtered = [h for h in hits if h["score"] >= threshold]
+    filtered = filtered[:top_k]
+    return filtered or hits[:1]
 
 
 def format_context(hits: list[dict]) -> str:
