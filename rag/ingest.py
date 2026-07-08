@@ -19,6 +19,43 @@ from rag.config import (
 from rag.regenerate import build_chunks, get_paths
 
 MIN_SECTION_CHARS = 60
+LOW_SIGNAL_HEADINGS = {
+    "source",
+    "sources",
+    "references",
+    "reference",
+    "links",
+    "link",
+    "kaynak",
+    "kaynaklar",
+}
+MERGE_PREFERRED_HEADINGS = {
+    "note",
+    "notes",
+    "conclusion",
+    "summary",
+    "key takeaway",
+    "key takeaways",
+    "practical guidance",
+}
+MERGE_HEADING_PREFIXES = (
+    "notes for",
+    "note for",
+    "about this source",
+    "about source",
+)
+CONTEXT_DEPENDENT_HEADING_PARTS = (
+    "takeaway",
+    "takeaways",
+    "summary",
+    "conclusion",
+    "final thoughts",
+    "what this means",
+    "why this matters",
+    "practical guidance",
+    "next steps",
+    "notes for",
+)
 
 
 def load_tree_chunks() -> list[dict]:
@@ -69,11 +106,87 @@ def _split_sections(body: str) -> list[tuple[str | None, str]]:
     return sections
 
 
+def _is_low_signal_section(heading: str | None, content: str) -> bool:
+    """Return True for sections that should not become standalone chunks."""
+    heading_norm = (heading or "").strip().lower().rstrip(":")
+    content_norm = content.strip().lower()
+
+    if heading_norm in LOW_SIGNAL_HEADINGS:
+        return True
+
+    # Avoid creating chunks that are only attribution links.
+    if content_norm.startswith("source:") and len(content_norm) < 280:
+        return True
+    if content_norm.startswith("kaynak:") and len(content_norm) < 280:
+        return True
+
+    return False
+
+
+def _should_merge_into_previous(heading: str | None, content: str) -> bool:
+    heading_norm = (heading or "").strip().lower().rstrip(":")
+    if any(heading_norm.startswith(prefix) for prefix in MERGE_HEADING_PREFIXES):
+        return True
+    if any(part in heading_norm for part in CONTEXT_DEPENDENT_HEADING_PARTS):
+        return True
+    if heading_norm in LOW_SIGNAL_HEADINGS or heading_norm in MERGE_PREFERRED_HEADINGS:
+        return True
+    if len(content.strip()) < MIN_SECTION_CHARS:
+        return True
+    return False
+
+
+def _first_paragraph(text: str, max_chars: int = 280) -> str:
+    """Return the first non-empty prose paragraph, clipped to max_chars."""
+    paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+    for paragraph in paragraphs:
+        # Skip markdown headings / bare titles; keep the first prose block.
+        lines = [
+            line.strip()
+            for line in paragraph.splitlines()
+            if line.strip() and not line.strip().startswith("#")
+        ]
+        if not lines:
+            continue
+        summary = " ".join(" ".join(lines).split())
+        if len(summary) <= max_chars:
+            return summary
+        clipped = summary[: max_chars - 1].rsplit(" ", 1)[0]
+        return clipped.rstrip(".,;:") + "…"
+    return ""
+
+
+def _build_document_context(
+    title: str,
+    topic: str | None,
+    sections: list[tuple[str | None, str]],
+) -> str:
+    """Build a short document-level summary for every chunk in this file."""
+    intro = ""
+    for heading, content in sections:
+        if heading is None and content.strip():
+            intro = _first_paragraph(content)
+            break
+    if not intro:
+        for heading, content in sections:
+            if content.strip() and not _is_low_signal_section(heading, content):
+                intro = _first_paragraph(content)
+                break
+
+    parts = [f'This document is about "{title}".']
+    if topic:
+        parts.append(f"Topic: {topic}.")
+    if intro:
+        parts.append(intro)
+    return " ".join(parts)
+
+
 def chunk_markdown(path: Path) -> list[dict]:
     """Turn one .md file into chunks, splitting by ## headings.
 
-    Files with no ## headings stay a single chunk. Very short sections are
-    merged into the previous chunk so we don't create tiny, low-signal vectors.
+    Files with no ## headings stay a single chunk. Context-dependent and short
+    sections are merged into the previous chunk. Every chunk also gets a short
+    document-level summary so section-only matches still carry enough context.
     """
     raw = path.read_text(encoding="utf-8")
     meta, body = _parse_frontmatter(raw)
@@ -86,19 +199,28 @@ def chunk_markdown(path: Path) -> list[dict]:
                 break
     title = title or path.stem
     source = meta.get("source_url", str(path))
+    topic = meta.get("topic")
 
     sections = _split_sections(body)
+    document_context = _build_document_context(title, topic, sections)
 
     texts: list[tuple[str | None, str]] = []
     for heading, content in sections:
         if not content and heading is None:
             continue
-        if texts and len(content) < MIN_SECTION_CHARS:
+        if texts and _should_merge_into_previous(heading, content):
             prev_heading, prev_text = texts[-1]
             merged = prev_text + ("\n\n" if prev_text else "")
-            merged += (f"## {heading}\n" if heading else "") + content
+            if not _is_low_signal_section(heading, content):
+                merged += (f"## {heading}\n" if heading else "") + content
+            elif content.strip():
+                # Keep attribution text with the parent chunk instead of standalone chunks.
+                merged += "\n" + content.strip()
             texts[-1] = (prev_heading, merged)
         else:
+            if _is_low_signal_section(heading, content):
+                # If this low-signal block is the first section, skip it.
+                continue
             texts.append((heading, content))
 
     if not texts:
@@ -109,7 +231,11 @@ def chunk_markdown(path: Path) -> list[dict]:
         header = f"{title}"
         if heading:
             header += f" — {heading}"
-        chunk_text = header + "\n\n" + content
+        # Skip redundant context when the chunk is already the intro (heading is None).
+        if heading is None:
+            chunk_text = f"{header}\n\n{content}"
+        else:
+            chunk_text = f"{header}\n\nDocument context: {document_context}\n\n{content}"
         chunks.append(
             {
                 "id": f"extra-{path.stem}-{i}",
@@ -121,6 +247,8 @@ def chunk_markdown(path: Path) -> list[dict]:
                     "category": "",
                     "full_path": f"{path.name}" + (f" > {heading}" if heading else ""),
                     "source_url": source,
+                    "document_title": title,
+                    "document_context": document_context,
                 },
             }
         )

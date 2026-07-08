@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 
 from rag.prompt import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
 from rag.retrieve import format_context, retrieve
@@ -68,13 +69,55 @@ def _make_chat(model, temperature: float = 0.3, max_tokens: int = 800):
     return chat
 
 
+def _sanitize_text_for_llm(text: str) -> str:
+    """Remove source lines and URLs before sending context to the model."""
+    cleaned_lines = []
+    for line in text.splitlines():
+        lower = line.strip().lower()
+        if lower.startswith("source:") or lower.startswith("kaynak:"):
+            continue
+        # Skip bare attribution lines that are mostly links.
+        if "http://" in line or "https://" in line:
+            line = re.sub(r"https?://\S+", "", line).strip()
+        if line:
+            cleaned_lines.append(line)
+    return "\n".join(cleaned_lines).strip()
+
+
+def _llm_context_from_hits(hits: list[dict]) -> str:
+    sections = []
+    for i, hit in enumerate(hits, 1):
+        meta = hit["metadata"]
+        header = meta.get("full_path") or meta.get("layer") or meta.get("doc_type", "context")
+        text = _sanitize_text_for_llm(hit["text"])
+        sections.append(f"[{i}] {header}\n{text}")
+    return "\n\n---\n\n".join(sections)
+
+
+def _format_sources(hits: list[dict]) -> str:
+    seen = set()
+    rows = []
+    for hit in hits:
+        meta = hit.get("metadata", {})
+        source = (meta.get("source_url") or "").strip()
+        if not source or source in seen:
+            continue
+        seen.add(source)
+        label = meta.get("full_path") or meta.get("doc_type") or "context"
+        rows.append(f"- {label}: {source}")
+    return "\n".join(rows) if rows else "- (no source metadata)"
+
+
 def _answer_question(chat, question: str, top_k: int, layer: str | None, stream: bool) -> None:
     hits = retrieve(question, top_k=top_k, layer=layer)
-    context = format_context(hits)
+    display_context = format_context(hits)
+    llm_context = _llm_context_from_hits(hits)
     print("\n=== Retrieved Context ===\n")
-    print(context)
+    print(display_context)
+    print("\n=== Used Sources ===\n")
+    print(_format_sources(hits))
     print("\n=== Answer ===\n")
-    answer(chat, question, context, stream=stream)
+    answer(chat, question, llm_context, stream=stream)
 
 
 def run_interactive(model_alias: str, top_k: int, layer: str | None, stream: bool) -> None:

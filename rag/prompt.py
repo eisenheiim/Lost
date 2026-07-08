@@ -15,7 +15,6 @@ How to answer:
   unrelated roles or paths into the answer just because they appear in context.
 - If the context lacks enough information, say so briefly instead of guessing.
 - Do not invent roles, paths, requirements, or steps that are not in the context.
-- Cite the source URL(s) you actually used.
 - Be concise, practical, and clear.
 """
 
@@ -26,5 +25,4 @@ Question:
 {question}
 
 Answer the question directly using only the relevant parts of the context above.
-Include the source link(s) you used.
 """
