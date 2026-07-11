@@ -31,8 +31,17 @@ def retrieve(
     (>= top_score * keep_ratio) and above an absolute floor (min_score). This
     removes low-relevance career-tree noise for questions that only need one
     or two strong matches, while keeping all of them when several are relevant.
-    The single best hit is always kept.
+    If no hit reaches the absolute floor, no context is returned.
     """
+    if not query.strip():
+        return []
+    if top_k < 1:
+        raise ValueError("top_k must be at least 1")
+    if not 0 < keep_ratio <= 1:
+        raise ValueError("keep_ratio must be greater than 0 and at most 1")
+    if not -1 <= min_score <= 1:
+        raise ValueError("min_score must be between -1 and 1")
+
     collection = get_collection()
     where: dict | None = None
     if layer and doc_type:
@@ -70,8 +79,7 @@ def retrieve(
     top_score = hits[0]["score"]
     threshold = max(min_score, top_score * keep_ratio)
     filtered = [h for h in hits if h["score"] >= threshold]
-    filtered = filtered[:top_k]
-    return filtered or hits[:1]
+    return filtered[:top_k]
 
 
 def format_context(hits: list[dict]) -> str:
@@ -89,7 +97,7 @@ def main() -> None:
 
     question = " ".join(sys.argv[1:]) or "I studied physics, what AI careers exist?"
     hits = retrieve(question, top_k=5)
-    print(format_context(hits))
+    print(format_context(hits) or "(no sufficiently relevant context)")
 
 
 if __name__ == "__main__":

@@ -9,6 +9,9 @@ from rag.prompt import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
 from rag.retrieve import format_context, retrieve
 
 DEFAULT_MODEL = "qwen2.5-0.5b"
+NO_RELEVANT_CONTEXT_MESSAGE = (
+    "I couldn't find a sufficiently relevant path in the career tree for that question."
+)
 
 
 def load_model(model_alias: str):
@@ -108,15 +111,26 @@ def _format_sources(hits: list[dict]) -> str:
     return "\n".join(rows) if rows else "- (no source metadata)"
 
 
-def _answer_question(chat, question: str, top_k: int, layer: str | None, stream: bool) -> None:
-    hits = retrieve(question, top_k=top_k, layer=layer)
+def _answer_question(
+    chat,
+    question: str,
+    top_k: int,
+    layer: str | None,
+    stream: bool,
+    hits: list[dict] | None = None,
+) -> None:
+    if hits is None:
+        hits = retrieve(question, top_k=top_k, layer=layer)
     display_context = format_context(hits)
-    llm_context = _llm_context_from_hits(hits)
     print("\n=== Retrieved Context ===\n")
-    print(display_context)
+    print(display_context or "(no sufficiently relevant context)")
     print("\n=== Used Sources ===\n")
     print(_format_sources(hits))
     print("\n=== Answer ===\n")
+    if not hits:
+        print(NO_RELEVANT_CONTEXT_MESSAGE)
+        return
+    llm_context = _llm_context_from_hits(hits)
     answer(chat, question, llm_context, stream=stream)
 
 
@@ -159,7 +173,7 @@ def main() -> None:
             parser.error("a question is required with --retrieve-only")
         hits = retrieve(args.question, top_k=args.top_k, layer=args.layer)
         print("=== Retrieved Context ===\n")
-        print(format_context(hits))
+        print(format_context(hits) or "(no sufficiently relevant context)")
         return
 
     if args.interactive:
@@ -169,10 +183,15 @@ def main() -> None:
     if not args.question:
         parser.error("provide a question or use --interactive")
 
+    hits = retrieve(args.question, top_k=args.top_k, layer=args.layer)
+    if not hits:
+        print(NO_RELEVANT_CONTEXT_MESSAGE)
+        return
+
     model = load_model(args.model)
     chat = _make_chat(model)
     try:
-        _answer_question(chat, args.question, args.top_k, args.layer, stream)
+        _answer_question(chat, args.question, args.top_k, args.layer, stream, hits=hits)
     finally:
         model.unload()
 
