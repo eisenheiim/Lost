@@ -7,6 +7,7 @@ EXTRA_CONTENT_DIR = CONTENT_DIR / "extra"
 CHROMA_DIR = ROOT / "chroma_db"
 
 CHUNKS_FILE = DATA_DIR / "chunks.jsonl"
+CV_CACHE_DIR = DATA_DIR / "cv_cache"
 CAREER_TREE_FILE = DATA_DIR / "career-tree.json"
 CAREER_TREE_MD = CONTENT_DIR / "career-tree.md"
 

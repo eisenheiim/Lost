@@ -9,6 +9,8 @@ dependencies = [
     "sentence-transformers>=3.0.0",
     "openai>=1.0.0",
     "foundry-local-sdk>=1.2.0",
+    "pypdf>=4.2.0",
+    "python-docx>=1.1.0",
 ]
 
 [project.scripts]
@@ -16,6 +18,7 @@ career-rag-regenerate = "rag.regenerate:regenerate"
 career-rag-index = "rag.ingest:build_index"
 career-rag-retrieve = "rag.retrieve:main"
 career-rag-ask = "rag.ask:main"
+career-rag-recommend = "rag.cv:main"
 
 [build-system]
 requires = ["hatchling"]

@@ -5,38 +5,18 @@ from __future__ import annotations
 import argparse
 import re
 
+from rag.llm import DEFAULT_MODEL, load_model, make_chat as _make_chat
 from rag.prompt import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
-from rag.retrieve import format_context, retrieve
+from rag.cv import (
+    DEFAULT_CV_EXTRACTION_MODEL,
+    load_or_extract_cv,
+    build_query_from_cv,
+    compact_cv_summary,
+)
 
-DEFAULT_MODEL = "qwen2.5-0.5b"
 NO_RELEVANT_CONTEXT_MESSAGE = (
     "I couldn't find a sufficiently relevant path in the career tree for that question."
 )
-
-
-def load_model(model_alias: str):
-    """Initialize Foundry Local, download + load the model, return an IModel."""
-    from foundry_local_sdk import Configuration, FoundryLocalManager
-
-    if FoundryLocalManager.instance is None:
-        FoundryLocalManager.initialize(Configuration(app_name="career_tree_rag"))
-    manager = FoundryLocalManager.instance
-
-    print("Preparing execution providers...")
-    manager.download_and_register_eps()
-
-    model = manager.catalog.get_model(model_alias)
-    if model is None:
-        raise SystemExit(f"Model '{model_alias}' not found in the Foundry Local catalog.")
-
-    if not model.is_cached:
-        print(f"Downloading model '{model_alias}'...")
-        model.download(lambda pct: print(f"\r  {pct:5.1f}%", end="", flush=True))
-        print()
-
-    print(f"Loading model '{model_alias}'...")
-    model.load()
-    return model
 
 
 def answer(chat, question: str, context: str, stream: bool = True) -> str:
@@ -63,13 +43,6 @@ def answer(chat, question: str, context: str, stream: bool = True) -> str:
     text = completion.choices[0].message.content or ""
     print(text)
     return text
-
-
-def _make_chat(model, temperature: float = 0.3, max_tokens: int = 800):
-    chat = model.get_chat_client()
-    chat.settings.temperature = temperature
-    chat.settings.max_tokens = max_tokens
-    return chat
 
 
 def _sanitize_text_for_llm(text: str) -> str:
@@ -111,6 +84,18 @@ def _format_sources(hits: list[dict]) -> str:
     return "\n".join(rows) if rows else "- (no source metadata)"
 
 
+def _retrieve_query(question: str, cv_query: str | None = None) -> str:
+    if cv_query:
+        return f"{question} ; user_profile: {cv_query}"
+    return question
+
+
+def _question_with_cv_profile(question: str, cv_summary: str | None = None) -> str:
+    if cv_summary:
+        return f"{question}\n\nUser profile (from CV):\n{cv_summary}\n"
+    return question
+
+
 def _answer_question(
     chat,
     question: str,
@@ -119,6 +104,8 @@ def _answer_question(
     stream: bool,
     hits: list[dict] | None = None,
 ) -> None:
+    from rag.retrieve import format_context, retrieve
+
     if hits is None:
         hits = retrieve(question, top_k=top_k, layer=layer)
     display_context = format_context(hits)
@@ -134,8 +121,16 @@ def _answer_question(
     answer(chat, question, llm_context, stream=stream)
 
 
-def run_interactive(model_alias: str, top_k: int, layer: str | None, stream: bool) -> None:
-    model = load_model(model_alias)
+def run_interactive(
+    model,
+    top_k: int,
+    layer: str | None,
+    stream: bool,
+    cv_query: str | None = None,
+    cv_summary: str | None = None,
+) -> None:
+    from rag.retrieve import retrieve
+
     chat = _make_chat(model)
     print("\nModel ready. Type your question (or 'exit' / 'quit' to leave).\n")
     try:
@@ -149,10 +144,18 @@ def run_interactive(model_alias: str, top_k: int, layer: str | None, stream: boo
                 continue
             if question.lower() in {"exit", "quit"}:
                 break
-            _answer_question(chat, question, top_k, layer, stream)
+            hits = retrieve(_retrieve_query(question, cv_query), top_k=top_k, layer=layer)
+            _answer_question(
+                chat,
+                _question_with_cv_profile(question, cv_summary),
+                top_k,
+                layer,
+                stream,
+                hits=hits,
+            )
             print()
     finally:
-        model.unload()
+        pass
 
 
 def main() -> None:
@@ -162,38 +165,93 @@ def main() -> None:
     parser.add_argument("--layer", default=None, help="Filter by layer name")
     parser.add_argument("--retrieve-only", action="store_true", help="Skip the LLM, show context only")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="Foundry Local model alias")
+    parser.add_argument(
+        "--extract-model",
+        default=None,
+        help="Foundry Local model alias for CV extraction (defaults to --model)",
+    )
     parser.add_argument("--no-stream", action="store_true", help="Disable token streaming")
+    parser.add_argument("--cv", default=None, help="Optional path to a CV file to augment retrieval & answer")
+    parser.add_argument("--no-cache", action="store_true", help="Ignore cached CV extraction results")
     parser.add_argument("-i", "--interactive", action="store_true", help="Ask many questions in one session")
     args = parser.parse_args()
 
     stream = not args.no_stream
 
+    # Optionally augment with CV
+    cv_query = None
+    cv_summary = None
+    cv_path = None
+    if args.cv:
+        from pathlib import Path
+
+        cv_path = Path(args.cv)
+        if not cv_path.exists():
+            raise SystemExit(f"CV not found: {cv_path}")
+
+    use_cache = not args.no_cache
+    extract_model = args.extract_model or args.model or DEFAULT_CV_EXTRACTION_MODEL
+
     if args.retrieve_only:
+        from rag.retrieve import format_context, retrieve
+
         if not args.question:
             parser.error("a question is required with --retrieve-only")
-        hits = retrieve(args.question, top_k=args.top_k, layer=args.layer)
+        if cv_path:
+            cv_json = load_or_extract_cv(cv_path, model_alias=extract_model, use_cache=use_cache)
+            cv_query = build_query_from_cv(cv_json)
+        hits = retrieve(_retrieve_query(args.question, cv_query), top_k=args.top_k, layer=args.layer)
         print("=== Retrieved Context ===\n")
         print(format_context(hits) or "(no sufficiently relevant context)")
         return
 
-    if args.interactive:
-        run_interactive(args.model, args.top_k, args.layer, stream)
-        return
-
-    if not args.question:
+    needs_model = args.interactive or (not args.retrieve_only and args.question)
+    if not needs_model:
         parser.error("provide a question or use --interactive")
 
-    hits = retrieve(args.question, top_k=args.top_k, layer=args.layer)
-    if not hits:
-        print(NO_RELEVANT_CONTEXT_MESSAGE)
-        return
+    model = None
+    if cv_path or args.interactive or args.question:
+        model = load_model(args.model)
 
-    model = load_model(args.model)
-    chat = _make_chat(model)
     try:
-        _answer_question(chat, args.question, args.top_k, args.layer, stream, hits=hits)
+        if cv_path:
+            print("Reading CV…")
+            extract_chat = _make_chat(model, temperature=0.1, max_tokens=2000)
+            cv_json = load_or_extract_cv(
+                cv_path,
+                model_alias=extract_model,
+                chat=extract_chat,
+                use_cache=use_cache,
+            )
+            cv_query = build_query_from_cv(cv_json)
+            cv_summary = compact_cv_summary(cv_json)
+
+        if args.interactive:
+            run_interactive(model, args.top_k, args.layer, stream, cv_query, cv_summary)
+            return
+
+        if not args.question:
+            parser.error("provide a question or use --interactive")
+
+        from rag.retrieve import retrieve
+
+        hits = retrieve(_retrieve_query(args.question, cv_query), top_k=args.top_k, layer=args.layer)
+        if not hits:
+            print(NO_RELEVANT_CONTEXT_MESSAGE)
+            return
+
+        chat = _make_chat(model)
+        _answer_question(
+            chat,
+            _question_with_cv_profile(args.question, cv_summary),
+            args.top_k,
+            args.layer,
+            stream,
+            hits=hits,
+        )
     finally:
-        model.unload()
+        if model is not None:
+            model.unload()
 
 
 if __name__ == "__main__":
