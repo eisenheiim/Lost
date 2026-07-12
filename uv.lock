@@ -747,7 +747,6 @@ source = { editable = "." }
 dependencies = [
     { name = "chromadb" },
     { name = "foundry-local-sdk" },
-    { name = "openai" },
     { name = "pypdf" },
     { name = "python-docx" },
     { name = "sentence-transformers" },
@@ -757,7 +756,6 @@ dependencies = [
 requires-dist = [
     { name = "chromadb", specifier = ">=0.6.0" },
     { name = "foundry-local-sdk", specifier = ">=1.2.0" },
-    { name = "openai", specifier = ">=1.0.0" },
     { name = "pypdf", specifier = ">=4.2.0" },
     { name = "python-docx", specifier = ">=1.1.0" },
     { name = "sentence-transformers", specifier = ">=3.0.0" },

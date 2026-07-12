@@ -96,6 +96,28 @@ def _question_with_cv_profile(question: str, cv_summary: str | None = None) -> s
     return question
 
 
+def _print_cv_debug(cv_query: str | None, cv_summary: str | None) -> None:
+    if not cv_query and not cv_summary:
+        return
+    print("\n=== CV Profile ===\n")
+    if cv_summary:
+        print("Summary sent to LLM:")
+        print(cv_summary)
+        print()
+    if cv_query:
+        print("Profile used for retrieval search:")
+        print(cv_query)
+        print()
+
+
+def _print_retrieval_query(question: str, cv_query: str | None) -> None:
+    query = _retrieve_query(question, cv_query)
+    if cv_query:
+        print("\n=== Retrieval Query ===\n")
+        print(query)
+        print()
+
+
 def _answer_question(
     chat,
     question: str,
@@ -128,6 +150,7 @@ def run_interactive(
     stream: bool,
     cv_query: str | None = None,
     cv_summary: str | None = None,
+    show_cv_debug: bool = False,
 ) -> None:
     from rag.retrieve import retrieve
 
@@ -144,6 +167,8 @@ def run_interactive(
                 continue
             if question.lower() in {"exit", "quit"}:
                 break
+            if show_cv_debug:
+                _print_retrieval_query(question, cv_query)
             hits = retrieve(_retrieve_query(question, cv_query), top_k=top_k, layer=layer)
             _answer_question(
                 chat,
@@ -174,6 +199,11 @@ def main() -> None:
     parser.add_argument("--cv", default=None, help="Optional path to a CV file to augment retrieval & answer")
     parser.add_argument("--no-cache", action="store_true", help="Ignore cached CV extraction results")
     parser.add_argument("-i", "--interactive", action="store_true", help="Ask many questions in one session")
+    parser.add_argument(
+        "--show-cv",
+        action="store_true",
+        help="Show CV profile and retrieval query used for each question",
+    )
     args = parser.parse_args()
 
     stream = not args.no_stream
@@ -200,6 +230,10 @@ def main() -> None:
         if cv_path:
             cv_json = load_or_extract_cv(cv_path, model_alias=extract_model, use_cache=use_cache)
             cv_query = build_query_from_cv(cv_json)
+            if args.show_cv:
+                _print_cv_debug(cv_query, compact_cv_summary(cv_json))
+        if cv_query:
+            _print_retrieval_query(args.question, cv_query)
         hits = retrieve(_retrieve_query(args.question, cv_query), top_k=args.top_k, layer=args.layer)
         print("=== Retrieved Context ===\n")
         print(format_context(hits) or "(no sufficiently relevant context)")
@@ -225,9 +259,19 @@ def main() -> None:
             )
             cv_query = build_query_from_cv(cv_json)
             cv_summary = compact_cv_summary(cv_json)
+            if args.show_cv or args.interactive:
+                _print_cv_debug(cv_query, cv_summary)
 
         if args.interactive:
-            run_interactive(model, args.top_k, args.layer, stream, cv_query, cv_summary)
+            run_interactive(
+                model,
+                args.top_k,
+                args.layer,
+                stream,
+                cv_query,
+                cv_summary,
+                show_cv_debug=bool(cv_query),
+            )
             return
 
         if not args.question:
@@ -235,6 +279,8 @@ def main() -> None:
 
         from rag.retrieve import retrieve
 
+        if cv_query and args.show_cv:
+            _print_retrieval_query(args.question, cv_query)
         hits = retrieve(_retrieve_query(args.question, cv_query), top_k=args.top_k, layer=args.layer)
         if not hits:
             print(NO_RELEVANT_CONTEXT_MESSAGE)

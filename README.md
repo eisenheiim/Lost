@@ -1,115 +1,183 @@
-## HealthRAG (Free Local Setup)
+# HealthRAG — Career Tree (local, free)
 
-This project uses:
-- ChromaDB for local vector index + retrieval
-- Sentence Transformers for local embeddings
-- Foundry Local for local LLM inference
+Local RAG app: ChromaDB + Sentence Transformers + Foundry Local.
 
-### 1) Install dependencies
+## Quick start
 
 ```bash
-uv sync
-# ensure the local package is installed so console scripts work
-uv pip install -e .
+cd /path/to/healthrag
+chmod +x setup.sh index.sh ask.sh retrieve.sh regenerate.sh recommend.sh
+./setup.sh
+source .venv/bin/activate
+./index.sh
+./ask.sh --interactive
 ```
 
-### 2) Build / rebuild local index
+## What you need
 
-Either using console scripts (if they work in your env):
+- Python 3.11+
+- Foundry Local — required for `./ask.sh` and `./recommend.sh` (not needed for `./retrieve.sh` or `./index.sh`)
+
+## CLI reference
+
+All `.sh` scripts activate `.venv` automatically. You can also run the same commands with `python -m rag.<module>` after `source .venv/bin/activate`.
+
+### `setup.sh` — one-time install
+
+Creates the virtual environment and installs dependencies.
 
 ```bash
-uv run career-rag-regenerate
-uv run career-rag-index
+./setup.sh
 ```
 
-Or, reliably via module execution (bypasses console-script import issues):
+Does **not** build the search index. Run `./index.sh` next.
+
+---
+
+### `regenerate.sh` — refresh career tree data (optional)
+
+Downloads the latest Career Tree from [ibz04.pro](https://www.ibz04.pro/blog/career-tree) and writes:
+
+- `data/career-tree.json`
+- `content/career-tree.md`
 
 ```bash
-uv run python -m rag.regenerate
-uv run python -m rag.ingest
+./regenerate.sh
 ```
 
-### 3) Ask questions
+Run this when the online tree has changed. You still need `./index.sh` afterward to update Chroma.
 
-Console script (if available):
+Equivalent: `python -m rag.regenerate`
+
+---
+
+### `index.sh` — build the vector index
+
+Embeds all chunks (career tree + `content/extra/*.md`) into Chroma at `chroma_db/`. Also writes `data/chunks.jsonl`.
 
 ```bash
-uv run career-rag-ask "I studied physics, what AI careers exist?"
+./index.sh
 ```
 
-Module form (recommended if you see ModuleNotFoundError):
+- First run can take **3–5 minutes** (downloads/loads the embedding model, embeds ~200+ chunks).
+- Required after setup, after `./regenerate.sh`, after adding articles, or if you delete `chroma_db/`.
+- Does **not** need Foundry Local.
+
+Equivalent: `python -m rag.ingest`
+
+---
+
+### `retrieve.sh` — search only (no LLM)
+
+Runs vector search and prints matching chunks. Useful for debugging retrieval without loading an LLM.
 
 ```bash
-uv run python -m rag.ask "I studied physics, what AI careers exist?"
+./retrieve.sh "path to LLM engineer"
+./retrieve.sh "How do I pivot from physics to AI?"
 ```
 
-Interactive mode:
+Equivalent: `python -m rag.retrieve "your question"`
+
+---
+
+### `ask.sh` — full RAG (retrieve + answer)
+
+Retrieves relevant context from Chroma, then asks Foundry Local to answer using that context.
 
 ```bash
-uv run career-rag-ask --interactive
-# or
-uv run python -m rag.ask --interactive
+# Single question
+./ask.sh "How do I plan my career for next year?"
+
+# Multiple questions in one session
+./ask.sh --interactive
+
+# CV-aware: retrieval and answer are personalized to your background
+./ask.sh --cv /path/to/cv.pdf "What roles fit me?"
+./ask.sh --cv /path/to/cv.pdf --interactive --show-cv
 ```
 
-Include a CV to tailor retrieval and answers (local extraction):
+| Flag | Description |
+|------|-------------|
+| `-i`, `--interactive` | Ask many questions in one session (type `quit` to exit) |
+| `--cv <path>` | PDF, DOCX, TXT, or MD — augments retrieval and personalization |
+| `--show-cv` | With `--interactive` + `--cv`: show CV profile and retrieval query per question |
+| `--retrieve-only` | Skip the LLM; print retrieved context only |
+| `--top-k <n>` | Max chunks to retrieve (default: 5) |
+| `--layer <name>` | Filter retrieval to a career-tree layer (e.g. `KNOWLEDGE`) |
+| `--model <alias>` | Foundry Local model for answers (default: `qwen2.5-0.5b`) |
+| `--extract-model <alias>` | Model for CV parsing (defaults to `--model`) |
+| `--no-cache` | Re-extract CV instead of using `data/cv_cache/` |
+| `--no-stream` | Disable token streaming |
+
+Equivalent: `python -m rag.ask [flags] [question]`
+
+---
+
+### `recommend.sh` — CV → role recommendations
+
+Extracts structured data from your CV, retrieves matching career paths, then generates a recommendation plan.
 
 ```bash
-uv run python -m rag.ask --cv /path/to/your_cv.pdf "What roles fit me?"
-uv run python -m rag.ask --cv /path/to/your_cv.pdf --interactive
+# Full flow: extract → retrieve → recommend
+./recommend.sh --cv /path/to/cv.pdf
+
+# Only parse CV to JSON (no recommendations)
+./recommend.sh --cv /path/to/cv.pdf --extract-only
 ```
 
-Force fresh CV extraction (ignore cache):
+| Flag | Description |
+|------|-------------|
+| `--cv <path>` | **Required.** PDF, DOCX, TXT, or MD |
+| `--extract-only` | Print extracted CV JSON and stop |
+| `--top-k <n>` | How many roles to retrieve (default: 5) |
+| `--layer <name>` | Restrict retrieval to one layer |
+| `--model <alias>` | Foundry Local model for recommendations |
+| `--extract-model <alias>` | Model for CV parsing |
+| `--no-cache` | Ignore cached CV extraction |
+
+Equivalent: `python -m rag.cv [flags]`
+
+---
+
+## Typical workflows
+
+**First time**
 
 ```bash
-uv run python -m rag.ask --cv /path/to/your_cv.pdf --no-cache "What roles fit me?"
+./setup.sh && source .venv/bin/activate && ./index.sh
 ```
 
-Use a stronger model for CV extraction only:
+**After adding an article to `content/extra/`**
 
 ```bash
-uv run python -m rag.ask --cv /path/to/your_cv.pdf --extract-model qwen2.5-1.5b "What roles fit me?"
+./index.sh
 ```
 
-#### CV flow (what happens when `--cv` is used)
-
-1. **Read CV** — `.pdf`, `.docx`, `.txt`, or `.md` is converted to text.
-2. **Extract profile** — Foundry Local turns the CV into structured JSON (`skills`, `roles`, `education`, `projects`, etc.).
-   - Results are cached under `data/cv_cache/` (skipped on the next run unless `--no-cache`).
-3. **Build two profile views:**
-   - `cv_query` — retrieval-focused search string (skills, roles, education, highlights, certifications). Used only for vector search.
-   - `cv_summary` — short human-readable profile. Sent to the LLM so answers are personalized.
-4. **Retrieve context** — ChromaDB query becomes:
-   - `your question ; user_profile: <cv_query>`
-5. **Generate answer** — LLM receives:
-   - retrieved chunks (without source URLs)
-   - your original question + `cv_summary`
-6. **Show sources separately** — used sources are printed in the terminal, not sent to the LLM.
-
-Retrieval and generation intentionally use different inputs: `cv_query` helps find relevant chunks; `cv_summary` helps the model write a clear, tailored answer.
-
-### 4) Recommend roles from a CV
-
-Extract CV info and get tailored role recommendations (local, no external services):
+**Refresh tree from the web**
 
 ```bash
-uv run career-rag-recommend --cv /path/to/your_cv.pdf
-uv run career-rag-recommend --cv /path/to/your_cv.pdf --no-cache
+./regenerate.sh && ./index.sh
 ```
 
-Only extract JSON (no recommendations):
+**Chroma looks empty**
+
+`chroma_db/` is not in git. If the folder exists but has no files, run `./index.sh`.
+
+## Add your own articles
+
+Put `.md` files in `content/extra/`, then run:
 
 ```bash
-uv run career-rag-recommend --cv /path/to/your_cv.pdf --extract-only
+./index.sh
 ```
 
-Cached extraction files live in `data/cv_cache/`.
-### Troubleshooting
+Files are split into chunks by `##` headings automatically. `README.md` in that folder is ignored.
 
-- ModuleNotFoundError: No module named rag
-	- Run: `uv pip install -e .` in the project root, then retry your command.
-	- If you previously created a virtualenv, ensure you run commands from the project root so uv picks up .venv.
-    
-- PDF/DOCX reading issues
-	- Ensure dependencies are installed (done by `uv sync`): pypdf, python-docx.
-	- For scanned PDFs (images), you’ll need OCR (e.g., Tesseract). This project focuses on text-based PDFs.
+## Generated / ignored paths
 
+These are local runtime artifacts (not committed):
+
+- `chroma_db/` — vector index
+- `data/chunks.jsonl` — all indexed chunks (regenerated on each `./index.sh`)
+- `data/cv_cache/` — cached CV JSON
+- `.venv/`
