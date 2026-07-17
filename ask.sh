@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -e
-cd "$(dirname "$0")"
-source .venv/bin/activate
+# shellcheck disable=SC1091
+source "$(dirname "$0")/_env.sh"
 python -m rag.ask "$@"

@@ -19,7 +19,14 @@ NO_RELEVANT_CONTEXT_MESSAGE = (
 )
 
 
-def answer(chat, question: str, context: str, stream: bool = True) -> str:
+def answer(
+    chat,
+    question: str,
+    context: str,
+    stream: bool = True,
+    *,
+    echo: bool = True,
+) -> str:
     """Run one chat completion against an already-loaded chat client."""
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
@@ -35,15 +42,54 @@ def answer(chat, question: str, context: str, stream: bool = True) -> str:
             if chunk.choices and chunk.choices[0].delta.content:
                 piece = chunk.choices[0].delta.content
                 parts.append(piece)
-                print(piece, end="", flush=True)
-        print()
+                if echo:
+                    print(piece, end="", flush=True)
+        if echo:
+            print()
         return "".join(parts)
 
     completion = chat.complete_chat(messages)
     text = completion.choices[0].message.content or ""
-    print(text)
+    if echo:
+        print(text)
     return text
 
+
+def ask(
+    question: str,
+    *,
+    chat,
+    top_k: int = 5,
+    layer: str | None = None,
+    cv_query: str | None = None,
+    cv_summary: str | None = None,
+) -> dict:
+    """Retrieve context and answer once. Returns answer, hits, and source lines.
+
+    Does not print to stdout — intended for UI and programmatic callers.
+    """
+    from rag.retrieve import retrieve
+
+    retrieval_query = _retrieve_query(question, cv_query)
+    hits = retrieve(retrieval_query, top_k=top_k, layer=layer)
+    sources = _format_sources(hits)
+    if not hits:
+        return {
+            "answer": NO_RELEVANT_CONTEXT_MESSAGE,
+            "hits": [],
+            "sources": sources,
+            "retrieval_query": retrieval_query,
+        }
+
+    llm_question = _question_with_cv_profile(question, cv_summary)
+    llm_context = _llm_context_from_hits(hits)
+    text = answer(chat, llm_question, llm_context, stream=False, echo=False)
+    return {
+        "answer": text,
+        "hits": hits,
+        "sources": sources,
+        "retrieval_query": retrieval_query,
+    }
 
 def _sanitize_text_for_llm(text: str) -> str:
     """Remove source lines and URLs before sending context to the model."""

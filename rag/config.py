@@ -1,10 +1,25 @@
+from __future__ import annotations
+
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 CONTENT_DIR = ROOT / "content"
-EXTRA_CONTENT_DIR = CONTENT_DIR / "extra"
-CHROMA_DIR = ROOT / "chroma_db"
+_extra_override = os.environ.get("HEALTHRAG_EXTRA_DIR", "").strip()
+EXTRA_CONTENT_DIR = (
+    Path(_extra_override).expanduser().resolve()
+    if _extra_override
+    else (CONTENT_DIR / "extra")
+)
+
+# Keep the vector store off iCloud Desktop (~/Desktop) — file hydration there
+# often hangs chromadb / torch imports for minutes with 0% CPU.
+_chroma_override = os.environ.get("HEALTHRAG_CHROMA_DIR", "").strip()
+if _chroma_override:
+    CHROMA_DIR = Path(_chroma_override).expanduser().resolve()
+else:
+    CHROMA_DIR = Path.home() / ".career_tree_rag" / "chroma_db"
 
 CHUNKS_FILE = DATA_DIR / "chunks.jsonl"
 CV_CACHE_DIR = DATA_DIR / "cv_cache"

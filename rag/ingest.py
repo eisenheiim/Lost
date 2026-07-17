@@ -5,9 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import chromadb
-from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
-
 from rag.config import (
     CAREER_TREE_FILE,
     CHROMA_DIR,
@@ -266,16 +263,25 @@ def load_extra_markdown() -> list[dict]:
     return chunks
 
 
-def build_index(reset: bool = True) -> chromadb.Collection:
+def build_index(reset: bool = True):
+    print("Building chunk list…", flush=True)
     tree_chunks = load_tree_chunks()
     extra_chunks = load_extra_markdown()
     chunks = tree_chunks + extra_chunks
+    print(f"  prepared {len(chunks)} chunks", flush=True)
 
     # Write every indexed chunk to a single file so it mirrors the vector store.
+    CHUNKS_FILE.parent.mkdir(parents=True, exist_ok=True)
     with CHUNKS_FILE.open("w", encoding="utf-8") as f:
         for chunk in chunks:
             f.write(json.dumps(chunk, ensure_ascii=False) + "\n")
 
+    print("Loading chromadb (can take 1–2 min on slow/synced disks)…", flush=True)
+    import chromadb
+    from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+
+    print(f"Opening vector store at {CHROMA_DIR}", flush=True)
+    CHROMA_DIR.mkdir(parents=True, exist_ok=True)
     client = chromadb.PersistentClient(path=str(CHROMA_DIR))
     if reset:
         try:
@@ -283,6 +289,7 @@ def build_index(reset: bool = True) -> chromadb.Collection:
         except chromadb.errors.NotFoundError:
             pass
 
+    print(f"Loading embedding model '{EMBEDDING_MODEL}'…", flush=True)
     embedding_fn = SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL)
     collection = client.get_or_create_collection(
         name=COLLECTION_NAME,
@@ -295,8 +302,10 @@ def build_index(reset: bool = True) -> chromadb.Collection:
     metadatas = [chunk["metadata"] for chunk in chunks]
 
     batch_size = 64
-    for start in range(0, len(chunks), batch_size):
+    total_batches = (len(chunks) + batch_size - 1) // batch_size
+    for i, start in enumerate(range(0, len(chunks), batch_size), 1):
         end = start + batch_size
+        print(f"  embedding batch {i}/{total_batches}…", flush=True)
         collection.add(
             ids=ids[start:end],
             documents=documents[start:end],
@@ -315,4 +324,5 @@ def build_index(reset: bool = True) -> chromadb.Collection:
 
 
 if __name__ == "__main__":
+    print("Starting career-tree index…", flush=True)
     build_index()
