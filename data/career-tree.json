@@ -1447,6 +1447,238 @@
           ]
         }
       ]
+    },
+    {
+      "id": "layer-10",
+      "name": "Social Impact & People Layer",
+      "type": "layer",
+      "tag": "{}",
+      "icon": "users",
+      "color": "#7a9e8e",
+      "children": [
+        {
+          "id": "cat-10-1",
+          "name": "Counseling & Mental Health",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-10-1-1",
+              "name": "Clinical Psychologist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-1-2",
+              "name": "Counselor",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-1-3",
+              "name": "School Counselor",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-1-4",
+              "name": "Marriage & Family Therapist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-1-5",
+              "name": "Psychiatric Social Worker",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-10-2",
+          "name": "Social Work & Community",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-10-2-1",
+              "name": "Social Worker",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-2-2",
+              "name": "Case Manager",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-2-3",
+              "name": "Community Organizer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-2-4",
+              "name": "Youth Worker",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-2-5",
+              "name": "Refugee / Migration Support Worker",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-10-3",
+          "name": "Education & Learning",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-10-3-1",
+              "name": "Teacher",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-3-2",
+              "name": "Special Education Teacher",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-3-3",
+              "name": "Education Policy Analyst",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-3-4",
+              "name": "Career Counselor",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-3-5",
+              "name": "Adult Education Facilitator",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-10-4",
+          "name": "Public Health & Care",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-10-4-1",
+              "name": "Public Health Officer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-4-2",
+              "name": "Community Health Worker",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-4-3",
+              "name": "Health Educator",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-4-4",
+              "name": "Occupational Therapist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-4-5",
+              "name": "Speech-Language Pathologist",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-10-5",
+          "name": "Policy, Justice & Advocacy",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-10-5-1",
+              "name": "Policy Analyst",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-5-2",
+              "name": "Human Rights Advocate",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-5-3",
+              "name": "Mediator",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-5-4",
+              "name": "Probation Officer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-5-5",
+              "name": "Nonprofit Program Manager",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        },
+        {
+          "id": "cat-10-6",
+          "name": "HR & People Ops",
+          "type": "category",
+          "tag": "{}",
+          "children": [
+            {
+              "id": "role-10-6-1",
+              "name": "HR Specialist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-6-2",
+              "name": "Talent Development Specialist",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-6-3",
+              "name": "Diversity & Inclusion Officer",
+              "type": "role",
+              "tag": ""
+            },
+            {
+              "id": "role-10-6-4",
+              "name": "Organizational Psychologist",
+              "type": "role",
+              "tag": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

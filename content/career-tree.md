@@ -1,13 +1,13 @@
 ---
 source_url: https://www.ibz04.pro/blog/career-tree
-total_paths: 184
+total_paths: 213
 ---
 
 # Career Tree
 
 Source: [The Career Tree](https://www.ibz04.pro/blog/career-tree)
 
-**184 career paths** across **9 layers**, from KNOWLEDGE (root) to specific roles.
+**213 career paths** across **10 layers**, from KNOWLEDGE (root) to specific roles.
 
 ## Computer Science & Systems Layer
 
@@ -289,6 +289,55 @@ Source: [The Career Tree](https://www.ibz04.pro/blog/career-tree)
 - **Political Scientist** — `KNOWLEDGE > Root Knowledge > Social Sciences > Political Scientist`
 - **Psychologist** — `KNOWLEDGE > Root Knowledge > Social Sciences > Psychologist`
 - **Sociologist** — `KNOWLEDGE > Root Knowledge > Social Sciences > Sociologist`
+
+## Social Impact & People Layer
+
+### Counseling & Mental Health
+
+- **Clinical Psychologist** — `KNOWLEDGE > Social Impact & People Layer > Counseling & Mental Health > Clinical Psychologist`
+- **Counselor** — `KNOWLEDGE > Social Impact & People Layer > Counseling & Mental Health > Counselor`
+- **Marriage & Family Therapist** — `KNOWLEDGE > Social Impact & People Layer > Counseling & Mental Health > Marriage & Family Therapist`
+- **Psychiatric Social Worker** — `KNOWLEDGE > Social Impact & People Layer > Counseling & Mental Health > Psychiatric Social Worker`
+- **School Counselor** — `KNOWLEDGE > Social Impact & People Layer > Counseling & Mental Health > School Counselor`
+
+### Education & Learning
+
+- **Adult Education Facilitator** — `KNOWLEDGE > Social Impact & People Layer > Education & Learning > Adult Education Facilitator`
+- **Career Counselor** — `KNOWLEDGE > Social Impact & People Layer > Education & Learning > Career Counselor`
+- **Education Policy Analyst** — `KNOWLEDGE > Social Impact & People Layer > Education & Learning > Education Policy Analyst`
+- **Special Education Teacher** — `KNOWLEDGE > Social Impact & People Layer > Education & Learning > Special Education Teacher`
+- **Teacher** — `KNOWLEDGE > Social Impact & People Layer > Education & Learning > Teacher`
+
+### HR & People Ops
+
+- **Diversity & Inclusion Officer** — `KNOWLEDGE > Social Impact & People Layer > HR & People Ops > Diversity & Inclusion Officer`
+- **HR Specialist** — `KNOWLEDGE > Social Impact & People Layer > HR & People Ops > HR Specialist`
+- **Organizational Psychologist** — `KNOWLEDGE > Social Impact & People Layer > HR & People Ops > Organizational Psychologist`
+- **Talent Development Specialist** — `KNOWLEDGE > Social Impact & People Layer > HR & People Ops > Talent Development Specialist`
+
+### Policy, Justice & Advocacy
+
+- **Human Rights Advocate** — `KNOWLEDGE > Social Impact & People Layer > Policy, Justice & Advocacy > Human Rights Advocate`
+- **Mediator** — `KNOWLEDGE > Social Impact & People Layer > Policy, Justice & Advocacy > Mediator`
+- **Nonprofit Program Manager** — `KNOWLEDGE > Social Impact & People Layer > Policy, Justice & Advocacy > Nonprofit Program Manager`
+- **Policy Analyst** — `KNOWLEDGE > Social Impact & People Layer > Policy, Justice & Advocacy > Policy Analyst`
+- **Probation Officer** — `KNOWLEDGE > Social Impact & People Layer > Policy, Justice & Advocacy > Probation Officer`
+
+### Public Health & Care
+
+- **Community Health Worker** — `KNOWLEDGE > Social Impact & People Layer > Public Health & Care > Community Health Worker`
+- **Health Educator** — `KNOWLEDGE > Social Impact & People Layer > Public Health & Care > Health Educator`
+- **Occupational Therapist** — `KNOWLEDGE > Social Impact & People Layer > Public Health & Care > Occupational Therapist`
+- **Public Health Officer** — `KNOWLEDGE > Social Impact & People Layer > Public Health & Care > Public Health Officer`
+- **Speech-Language Pathologist** — `KNOWLEDGE > Social Impact & People Layer > Public Health & Care > Speech-Language Pathologist`
+
+### Social Work & Community
+
+- **Case Manager** — `KNOWLEDGE > Social Impact & People Layer > Social Work & Community > Case Manager`
+- **Community Organizer** — `KNOWLEDGE > Social Impact & People Layer > Social Work & Community > Community Organizer`
+- **Refugee / Migration Support Worker** — `KNOWLEDGE > Social Impact & People Layer > Social Work & Community > Refugee / Migration Support Worker`
+- **Social Worker** — `KNOWLEDGE > Social Impact & People Layer > Social Work & Community > Social Worker`
+- **Youth Worker** — `KNOWLEDGE > Social Impact & People Layer > Social Work & Community > Youth Worker`
 
 ## Software Product Layer
 

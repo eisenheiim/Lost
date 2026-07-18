@@ -50,7 +50,7 @@ def run_script(
 
 
 def extract_answer(stdout: str) -> str:
-    """Pull the LLM answer block from ask.sh output when present."""
+    """Pull the LLM answer block from the ask output when present."""
     marker = "=== Answer ==="
     if marker in stdout:
         return stdout.split(marker, 1)[1].strip() or "(empty answer)"
@@ -59,7 +59,6 @@ def extract_answer(stdout: str) -> str:
 
 def extract_json_object(text: str) -> dict | list | None:
     """Find and parse the first top-level JSON object/array in mixed stdout."""
-    # Prefer fenced or indented JSON dumps from recommend --extract-only
     start_obj = text.find("{")
     start_arr = text.find("[")
     if start_obj == -1 and start_arr == -1:
@@ -83,7 +82,6 @@ def extract_json_object(text: str) -> dict | list | None:
     try:
         return json.loads(candidate)
     except json.JSONDecodeError:
-        # Fallback: try progressively smaller slices ending at each matching brace
         for match in re.finditer(r"\{[\s\S]*\}", text):
             try:
                 return json.loads(match.group(0))
@@ -106,7 +104,7 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
 
       html, body, [class*="css"] {
         font-family: "DM Sans", sans-serif;
@@ -117,33 +115,166 @@ st.markdown(
           radial-gradient(900px 500px at 100% 0%, #e7eef8 0%, transparent 50%),
           linear-gradient(180deg, #f7faf8 0%, #eef3f0 100%);
       }
+
+      /* Force dark, readable text everywhere */
+      .stApp, .stApp p, .stApp li, .stApp label, .stApp span,
+      .stMarkdown, div[data-testid="stCaptionContainer"] {
+        color: #1c2b24 !important;
+      }
+
       h1, h2, h3 {
         font-family: "Instrument Serif", Georgia, serif !important;
         letter-spacing: -0.02em;
+        color: #14231c !important;
       }
+      h1 { font-size: 4rem !important; line-height: 1.15 !important; }
+      h2, h3 { font-size: 2.4rem !important; line-height: 1.2 !important; }
+
       .block-container {
-        padding-top: 2rem;
-        max-width: 960px;
+        padding-top: 2.8rem;
+        padding-bottom: 3rem;
+        max-width: 1180px;
+        font-size: 1.35rem;
       }
+
+      /* Captions / helper text */
+      div[data-testid="stCaptionContainer"],
+      div[data-testid="stCaptionContainer"] p {
+        font-size: 1.2rem !important;
+        line-height: 1.55 !important;
+      }
+
+      /* Tabs: always visible, big, dark — not only on hover */
       div[data-testid="stTabs"] button[role="tab"] {
-        font-weight: 500;
+        font-size: 1.55rem !important;
+        font-weight: 600 !important;
+        color: #24523c !important;
+        opacity: 1 !important;
+        padding: 1.15rem 1.8rem !important;
+        background: rgba(255, 255, 255, 0.65);
+        border-radius: 16px 16px 0 0;
+        margin-right: 0.5rem;
       }
+      div[data-testid="stTabs"] button[role="tab"] p {
+        font-size: 1.55rem !important;
+        color: #24523c !important;
+      }
+      div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+        background: #ffffff;
+        color: #0d3b26 !important;
+        box-shadow: 0 -4px 14px rgba(36, 82, 60, 0.12);
+      }
+      div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p {
+        color: #0d3b26 !important;
+      }
+      div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {
+        background-color: #2f8f5b !important;
+        height: 5px !important;
+      }
+
       .hero-sub {
-        color: #3d5248;
-        font-size: 1.05rem;
-        margin-top: -0.6rem;
-        margin-bottom: 1.5rem;
+        color: #3d5248 !important;
+        font-size: 1.65rem;
+        margin-top: -0.4rem;
+        margin-bottom: 2.2rem;
+        line-height: 1.45;
       }
+
+      /* Chat bubbles / cards */
       .model-answer {
         background: linear-gradient(135deg, #eef7ff 0%, #f3efff 100%);
         border: 1px solid #bfd7ff;
-        border-left: 5px solid #4f8cff;
-        border-radius: 18px;
-        color: #17324d;
-        padding: 1rem 1.1rem;
+        border-left: 7px solid #4f8cff;
+        border-radius: 20px;
+        color: #17324d !important;
+        padding: 1.5rem 1.7rem;
         box-shadow: 0 10px 24px rgba(48, 87, 135, 0.10);
-        line-height: 1.6;
+        line-height: 1.75;
+        font-size: 1.35rem;
         white-space: pre-wrap;
+      }
+      .model-answer * { color: #17324d !important; }
+
+      div[data-testid="stChatMessage"] {
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 18px;
+        padding: 1rem 1.2rem;
+        margin-bottom: 0.9rem;
+        font-size: 1.3rem !important;
+      }
+      div[data-testid="stChatMessage"] p {
+        font-size: 1.3rem !important;
+        line-height: 1.65 !important;
+      }
+
+      /* Inputs: dark text on white — typing must stay readable */
+      div[data-testid="stChatInput"],
+      div[data-testid="stChatInput"] > div,
+      div[data-testid="stChatInput"] textarea,
+      div[data-testid="stChatInput"] [contenteditable="true"],
+      div[data-testid="stChatInput"] div[role="textbox"],
+      .stChatInput textarea,
+      .stTextInput input,
+      .stTextInput div[data-baseweb="input"],
+      .stTextInput div[data-baseweb="input"] input {
+        background-color: #ffffff !important;
+        color: #14231c !important;
+        -webkit-text-fill-color: #14231c !important;
+        caret-color: #14231c !important;
+        font-size: 1.35rem !important;
+        min-height: 3.2rem !important;
+        line-height: 1.5 !important;
+      }
+      div[data-testid="stChatInput"] textarea::placeholder,
+      .stTextInput input::placeholder {
+        color: #5a6e64 !important;
+        -webkit-text-fill-color: #5a6e64 !important;
+        opacity: 1 !important;
+        font-size: 1.35rem !important;
+      }
+      div[data-testid="stChatInput"] {
+        border-radius: 18px !important;
+      }
+      .stTextInput label p,
+      div[data-testid="stFileUploader"] label p,
+      div[data-testid="stWidgetLabel"] p {
+        font-size: 1.25rem !important;
+      }
+
+      .stButton button {
+        font-size: 1.3rem !important;
+        padding: 0.9rem 1.9rem !important;
+        border-radius: 14px !important;
+        min-height: 3.2rem !important;
+      }
+      .stButton button p {
+        font-size: 1.3rem !important;
+      }
+      .stButton button[kind="primary"] {
+        background: #2f8f5b !important;
+        border: none !important;
+      }
+      .stButton button[kind="primary"] p { color: #ffffff !important; }
+
+      div[data-testid="stFileUploader"] {
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 18px;
+        padding: 1.3rem;
+        font-size: 1.25rem !important;
+      }
+      div[data-testid="stFileUploader"] p,
+      div[data-testid="stFileUploader"] span {
+        font-size: 1.2rem !important;
+      }
+
+      div[data-testid="stExpander"] summary p {
+        font-size: 1.25rem !important;
+        color: #24523c !important;
+      }
+
+      /* Alerts / success / warnings */
+      div[data-testid="stAlert"] p {
+        font-size: 1.25rem !important;
       }
     </style>
     """,
@@ -156,14 +287,15 @@ def render_model_answer(text: str) -> None:
     safe = escape(text or "(empty answer)")
     st.markdown(f'<div class="model-answer">{safe}</div>', unsafe_allow_html=True)
 
+
 st.title("Career Tree RAG")
 st.markdown(
-    '<p class="hero-sub">Yerel kariyer asistanı · Chroma + Foundry Local</p>',
+    '<p class="hero-sub">Your local career advisor · private, on-device AI</p>',
     unsafe_allow_html=True,
 )
 
 tab_chat, tab_cv, tab_index = st.tabs(
-    ["💬 RAG Sohbet", "📄 CV Analiz & Öneri", "⚙️ Doküman İndeksleme"]
+    ["💬 Career Chat", "📄 CV Analysis", "⚙️ Indexing"]
 )
 
 
@@ -172,10 +304,10 @@ tab_chat, tab_cv, tab_index = st.tabs(
 # ---------------------------------------------------------------------------
 
 with tab_chat:
-    st.subheader("Sohbet")
+    st.subheader("Ask about your career")
     st.caption(
-        "Sorular `./ask.sh` üzerinden Foundry Local ile yanıtlanır. "
-        "İlk çalıştırmada model yüklemesi 1–3 dakika sürebilir."
+        "Answers are generated locally with retrieval over the Career Tree. "
+        "The first question can take 1–3 minutes while the model loads."
     )
 
     if "chat_messages" not in st.session_state:
@@ -188,17 +320,17 @@ with tab_chat:
             else:
                 st.markdown(msg["content"])
             if msg.get("raw"):
-                with st.expander("Ham script çıktısı"):
+                with st.expander("Details"):
                     st.code(msg["raw"], language="text")
 
-    question = st.chat_input("Kariyer sorunuzu yazın…")
+    question = st.chat_input("Type your career question…")
     if question:
         st.session_state.chat_messages.append({"role": "user", "content": question})
         with st.chat_message("user"):
             st.markdown(question)
 
         with st.chat_message("assistant"):
-            with st.spinner("ask.sh çalışıyor…"):
+            with st.spinner("Thinking… (loading the local model can take a few minutes)"):
                 try:
                     proc = run_script(ASK_SH, [question, "--no-stream"])
                     raw = (proc.stdout or "") + (
@@ -206,7 +338,7 @@ with tab_chat:
                     )
                     if proc.returncode != 0:
                         answer = (
-                            f"Script hata ile bitti (exit {proc.returncode}).\n\n"
+                            "Something went wrong while answering.\n\n"
                             f"```\n{(proc.stderr or proc.stdout or '').strip()[-2000:]}\n```"
                         )
                         st.error(answer)
@@ -221,25 +353,25 @@ with tab_chat:
                     else:
                         answer = extract_answer(proc.stdout or "")
                         render_model_answer(answer)
-                        with st.expander("Ham script çıktısı"):
-                            st.code(raw.strip() or "(boş)", language="text")
+                        with st.expander("Details"):
+                            st.code(raw.strip() or "(empty)", language="text")
                         st.session_state.chat_messages.append(
                             {"role": "assistant", "content": answer, "raw": raw}
                         )
                 except subprocess.TimeoutExpired:
-                    err = "Zaman aşımı: ask.sh 10 dakikadan uzun sürdü."
+                    err = "Timed out: the answer took longer than 10 minutes."
                     st.error(err)
                     st.session_state.chat_messages.append(
                         {"role": "assistant", "content": err, "is_error": True}
                     )
                 except Exception as exc:  # noqa: BLE001
-                    err = f"Beklenmeyen hata: {exc}"
+                    err = f"Unexpected error: {exc}"
                     st.error(err)
                     st.session_state.chat_messages.append(
                         {"role": "assistant", "content": err, "is_error": True}
                     )
 
-    if st.session_state.chat_messages and st.button("Sohbeti temizle", key="clear_chat"):
+    if st.session_state.chat_messages and st.button("Clear chat", key="clear_chat"):
         st.session_state.chat_messages = []
         st.rerun()
 
@@ -249,25 +381,26 @@ with tab_chat:
 # ---------------------------------------------------------------------------
 
 with tab_cv:
-    st.subheader("CV Analiz & Öneri")
+    st.subheader("CV analysis & recommendations")
     st.caption(
-        "PDF veya TXT yükleyin. Analiz `./recommend.sh --cv … --extract-only` ile "
-        "yapılandırılmış JSON üretir."
+        "Upload your CV (PDF, TXT, MD, or DOCX). It is parsed locally into a "
+        "structured profile — nothing leaves your machine."
     )
 
     uploaded = st.file_uploader(
-        "CV dosyası",
+        "Upload your CV",
         type=["pdf", "txt", "md", "docx"],
-        help="Sürükle-bırak veya seç. Maks. boyut Streamlit varsayılanına bağlıdır.",
+        help="Drag & drop or browse.",
     )
 
     col_a, col_b = st.columns([1, 3])
     with col_a:
-        analyze = st.button("Analiz Et", type="primary", disabled=uploaded is None)
+        analyze = st.button("Analyze", type="primary", disabled=uploaded is None)
 
     if analyze and uploaded is not None:
         suffix = Path(uploaded.name).suffix.lower() or ".txt"
         try:
+            (ROOT / "data" / "cv_cache").mkdir(parents=True, exist_ok=True)
             with tempfile.NamedTemporaryFile(
                 delete=False,
                 suffix=suffix,
@@ -276,9 +409,7 @@ with tab_cv:
                 tmp.write(uploaded.getvalue())
                 tmp_path = Path(tmp.name)
 
-            (ROOT / "data" / "cv_cache").mkdir(parents=True, exist_ok=True)
-
-            with st.spinner("recommend.sh çalışıyor (Foundry Local)…"):
+            with st.spinner("Analyzing your CV locally… (first run can take a few minutes)"):
                 proc = run_script(
                     RECOMMEND_SH,
                     ["--cv", str(tmp_path), "--extract-only"],
@@ -289,22 +420,22 @@ with tab_cv:
             )
 
             if proc.returncode != 0:
-                st.error(f"Script hata ile bitti (exit {proc.returncode})")
+                st.error("CV analysis failed.")
                 st.code((proc.stderr or proc.stdout or "")[-3000:], language="text")
             else:
                 parsed = extract_json_object(proc.stdout or "")
                 if parsed is None:
-                    st.warning("JSON bulunamadı; ham çıktı gösteriliyor.")
-                    st.code(raw.strip() or "(boş)", language="text")
+                    st.warning("Could not parse a structured profile; showing raw output.")
+                    st.code(raw.strip() or "(empty)", language="text")
                 else:
-                    st.success("CV analizi tamamlandı")
+                    st.success("CV analysis complete")
                     st.json(parsed)
-                    with st.expander("Ham script çıktısı"):
+                    with st.expander("Details"):
                         st.code(raw.strip(), language="text")
         except subprocess.TimeoutExpired:
-            st.error("Zaman aşımı: recommend.sh 10 dakikadan uzun sürdü.")
+            st.error("Timed out: CV analysis took longer than 10 minutes.")
         except Exception as exc:  # noqa: BLE001
-            st.error(f"Beklenmeyen hata: {exc}")
+            st.error(f"Unexpected error: {exc}")
 
 
 # ---------------------------------------------------------------------------
@@ -312,43 +443,44 @@ with tab_cv:
 # ---------------------------------------------------------------------------
 
 with tab_index:
-    st.subheader("Doküman İndeksleme")
+    st.subheader("Build the search index")
     st.caption(
-        "Varsayılan olarak career tree + `content/extra/` indekslenir. "
-        "İsterseniz ekstra markdown klasörü verin; `./index.sh <klasör>` çalışır."
+        "Indexes the Career Tree plus your own markdown articles so they become "
+        "searchable. Run this once after setup, and again whenever you add articles."
     )
 
     folder = st.text_input(
-        "İndekslenecek klasör yolu (opsiyonel)",
+        "Folder with extra markdown articles (optional)",
         value=str(ROOT / "content" / "extra"),
-        help="Bu klasördeki .md dosyaları extra içerik olarak indekslenir.",
+        help="All .md files in this folder are indexed as extra content.",
     )
 
-    if st.button("İndekslemeyi Başlat", type="primary"):
+    if st.button("Start indexing", type="primary"):
         folder_path = Path(folder).expanduser() if folder.strip() else None
         args: list[str] = []
 
         if folder_path is not None:
             if not folder_path.is_dir():
-                st.error(f"Klasör bulunamadı: {folder_path}")
+                st.error(f"Folder not found: {folder_path}")
             else:
                 args = [str(folder_path.resolve())]
 
         if folder_path is None or folder_path.is_dir():
-            with st.spinner("index.sh çalışıyor…"):
+            with st.spinner("Indexing… this can take a few minutes."):
                 try:
                     proc = run_script(INDEX_SH, args, timeout=DEFAULT_TIMEOUT)
                     raw = (proc.stdout or "") + (
                         f"\n\n[stderr]\n{proc.stderr}" if proc.stderr else ""
                     )
                     if proc.returncode != 0:
-                        st.error(f"İndeksleme başarısız (exit {proc.returncode})")
+                        st.error("Indexing failed.")
                         st.code(raw.strip()[-3000:], language="text")
                     else:
-                        st.success("İndeksleme tamamlandı")
+                        st.success("Indexing complete")
                         if proc.stdout.strip():
-                            st.code(proc.stdout.strip(), language="text")
+                            with st.expander("Details"):
+                                st.code(proc.stdout.strip(), language="text")
                 except subprocess.TimeoutExpired:
-                    st.error("Zaman aşımı: index.sh 10 dakikadan uzun sürdü.")
+                    st.error("Timed out: indexing took longer than 10 minutes.")
                 except Exception as exc:  # noqa: BLE001
-                    st.error(f"Beklenmeyen hata: {exc}")
+                    st.error(f"Unexpected error: {exc}")
