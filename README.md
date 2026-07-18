@@ -4,7 +4,10 @@ Local career advisor: **ChromaDB** + **Sentence Transformers** + **Azure Foundry
 
 Career path data is derived from [Ibrahim’s Career Tree](https://www.ibz04.pro/blog/career-tree) (ibz04.pro), with local extensions (e.g. social careers) and optional markdown articles in `content/extra/`. Please credit that source if you republish the tree content.
 
-**License:** MIT — see [`LICENSE`](LICENSE).
+**License:** MIT — see [`LICENSE`](LICENSE).  
+**Version:** 1.0.0
+
+This is a local career-exploration tool, not professional counseling or hiring advice. Answers depend on your indexed content and the local model you choose.
 
 ---
 

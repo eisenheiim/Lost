@@ -1,7 +1,7 @@
 [project]
 name = "healthrag"
-version = "0.1.0"
-description = "Career Tree RAG powered by Azure Foundry Local"
+version = "1.0.0"
+description = "Local Career Tree RAG with Chroma, embeddings, Foundry Local, and Streamlit UI"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

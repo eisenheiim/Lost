@@ -59,7 +59,7 @@ def load_tree_chunks() -> list[dict]:
     """Build career-tree chunks (overview + layers + paths) from career-tree.json."""
     if not CAREER_TREE_FILE.exists():
         raise SystemExit(
-            f"{CAREER_TREE_FILE} not found. Run: uv run career-rag-regenerate"
+            f"{CAREER_TREE_FILE} not found. Run: ./regenerate.sh"
         )
     tree = json.loads(CAREER_TREE_FILE.read_text(encoding="utf-8"))
     return build_chunks(get_paths(tree))

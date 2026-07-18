@@ -225,7 +225,7 @@ def regenerate() -> None:
     print("Wrote:")
     print(f"  {CAREER_TREE_MD}")
     print(f"  {CAREER_TREE_FILE}")
-    print(f"  ({len(paths)} paths — run 'career-rag-index' to build chunks + index)")
+    print(f"  ({len(paths)} paths — run ./index.sh to build chunks + index)")
 
 
 if __name__ == "__main__":

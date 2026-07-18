@@ -3,7 +3,7 @@
 Drop `.md` files in this folder, then rebuild the index:
 
 ```bash
-uv run career-rag-index
+./index.sh
 ```
 
 ## Chunking
