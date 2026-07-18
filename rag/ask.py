@@ -200,7 +200,7 @@ def run_interactive(
 ) -> None:
     from rag.retrieve import retrieve
 
-    chat = _make_chat(model)
+    chat = _make_chat(model, max_tokens=450)
     print("\nModel ready. Type your question (or 'exit' / 'quit' to leave).\n")
     try:
         while True:
@@ -332,7 +332,7 @@ def main() -> None:
             print(NO_RELEVANT_CONTEXT_MESSAGE)
             return
 
-        chat = _make_chat(model)
+        chat = _make_chat(model, max_tokens=450)
         _answer_question(
             chat,
             _question_with_cv_profile(args.question, cv_summary),

@@ -11,6 +11,8 @@ __pycache__/
 *.mp3
 *.wav
 *.avif
+*.mov
+Screen Recording*.mov
 rag/*.pdf
 *.egg-info/
 dist/

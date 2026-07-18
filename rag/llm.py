@@ -30,7 +30,7 @@ def load_model(model_alias: str):
     return model
 
 
-def make_chat(model, temperature: float = 0.3, max_tokens: int = 800):
+def make_chat(model, temperature: float = 0.3, max_tokens: int = 450):
     chat = model.get_chat_client()
     chat.settings.temperature = temperature
     chat.settings.max_tokens = max_tokens

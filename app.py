@@ -49,12 +49,78 @@ def run_script(
     )
 
 
+_MODEL_PROGRESS_RE = re.compile(
+    r"^(?:Preparing execution providers\.*|Downloading model\b.*|"
+    r"Loading model\b.*|\s*\d{1,3}(?:\.\d)?%\s*)$",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+
 def extract_answer(stdout: str) -> str:
     """Pull the LLM answer block from the ask output when present."""
     marker = "=== Answer ==="
     if marker in stdout:
-        return stdout.split(marker, 1)[1].strip() or "(empty answer)"
-    return stdout.strip() or "(no output)"
+        text = stdout.split(marker, 1)[1].strip()
+    else:
+        text = _MODEL_PROGRESS_RE.sub("", stdout).strip()
+    return text or "(empty answer)"
+
+
+def ask_career_question(question: str, *, first_question: bool) -> None:
+    """Run ask.sh, append the exchange to session state, and render the reply."""
+    st.session_state.chat_messages.append({"role": "user", "content": question})
+    with st.chat_message("user"):
+        st.markdown(question)
+
+    spinner = (
+        "Thinking… (first question can take a few minutes while the model loads)"
+        if first_question
+        else "Thinking…"
+    )
+    with st.chat_message("assistant"):
+        with st.spinner(spinner):
+            try:
+                proc = run_script(ASK_SH, [question, "--no-stream"])
+                raw = (proc.stdout or "") + (
+                    f"\n\n[stderr]\n{proc.stderr}" if proc.stderr else ""
+                )
+                if proc.returncode != 0:
+                    answer = (
+                        "Something went wrong while answering.\n\n"
+                        f"```\n{(proc.stderr or proc.stdout or '').strip()[-2000:]}\n```"
+                    )
+                    st.error(answer)
+                    st.session_state.chat_messages.append(
+                        {
+                            "role": "assistant",
+                            "content": answer,
+                            "raw": raw,
+                            "is_error": True,
+                        }
+                    )
+                else:
+                    answer = extract_answer(proc.stdout or "")
+                    render_model_answer(answer)
+                    with st.expander("Details"):
+                        st.code(raw.strip() or "(empty)", language="text")
+                    st.session_state.chat_messages.append(
+                        {"role": "assistant", "content": answer, "raw": raw}
+                    )
+            except subprocess.TimeoutExpired:
+                err = "Timed out: the answer took longer than 10 minutes."
+                st.error(err)
+                st.session_state.chat_messages.append(
+                    {"role": "assistant", "content": err, "is_error": True}
+                )
+            except Exception as exc:  # noqa: BLE001
+                err = f"Unexpected error: {exc}"
+                st.error(err)
+                st.session_state.chat_messages.append(
+                    {"role": "assistant", "content": err, "is_error": True}
+                )
+
+    st.session_state.chat_model_ready = True
+    st.rerun()
 
 
 def extract_json_object(text: str) -> dict | list | None:
@@ -144,32 +210,39 @@ st.markdown(
         line-height: 1.55 !important;
       }
 
-      /* Tabs: always visible, big, dark — not only on hover */
+      /* Tabs: Career Chat / CV Analysis / Indexing — large & always readable */
+      div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+        gap: 0.6rem;
+        margin-bottom: 0.5rem;
+      }
       div[data-testid="stTabs"] button[role="tab"] {
-        font-size: 1.55rem !important;
-        font-weight: 600 !important;
+        font-size: 2rem !important;
+        font-weight: 700 !important;
         color: #24523c !important;
         opacity: 1 !important;
-        padding: 1.15rem 1.8rem !important;
-        background: rgba(255, 255, 255, 0.65);
-        border-radius: 16px 16px 0 0;
-        margin-right: 0.5rem;
+        padding: 1.4rem 2.2rem !important;
+        min-height: 4.2rem !important;
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 18px 18px 0 0;
+        margin-right: 0.35rem;
       }
       div[data-testid="stTabs"] button[role="tab"] p {
-        font-size: 1.55rem !important;
+        font-size: 2rem !important;
+        font-weight: 700 !important;
         color: #24523c !important;
+        line-height: 1.2 !important;
       }
       div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
         background: #ffffff;
         color: #0d3b26 !important;
-        box-shadow: 0 -4px 14px rgba(36, 82, 60, 0.12);
+        box-shadow: 0 -4px 16px rgba(36, 82, 60, 0.14);
       }
       div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p {
         color: #0d3b26 !important;
       }
       div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {
         background-color: #2f8f5b !important;
-        height: 5px !important;
+        height: 6px !important;
       }
 
       .hero-sub {
@@ -305,13 +378,18 @@ tab_chat, tab_cv, tab_index = st.tabs(
 
 with tab_chat:
     st.subheader("Ask about your career")
-    st.caption(
-        "Answers are generated locally with retrieval over the Career Tree. "
-        "The first question can take 1–3 minutes while the model loads."
-    )
-
     if "chat_messages" not in st.session_state:
         st.session_state.chat_messages = []
+    if "chat_model_ready" not in st.session_state:
+        st.session_state.chat_model_ready = False
+
+    if not st.session_state.chat_model_ready:
+        st.caption(
+            "Answers are generated locally with retrieval over the Career Tree. "
+            "The first question can take 1–3 minutes while the model loads."
+        )
+    else:
+        st.caption("Answers are generated locally with retrieval over the Career Tree.")
 
     for msg in st.session_state.chat_messages:
         with st.chat_message(msg["role"]):
@@ -323,57 +401,28 @@ with tab_chat:
                 with st.expander("Details"):
                     st.code(msg["raw"], language="text")
 
-    question = st.chat_input("Type your career question…")
-    if question:
-        st.session_state.chat_messages.append({"role": "user", "content": question})
-        with st.chat_message("user"):
-            st.markdown(question)
+    first_question = not st.session_state.chat_model_ready
 
-        with st.chat_message("assistant"):
-            with st.spinner("Thinking… (loading the local model can take a few minutes)"):
-                try:
-                    proc = run_script(ASK_SH, [question, "--no-stream"])
-                    raw = (proc.stdout or "") + (
-                        f"\n\n[stderr]\n{proc.stderr}" if proc.stderr else ""
-                    )
-                    if proc.returncode != 0:
-                        answer = (
-                            "Something went wrong while answering.\n\n"
-                            f"```\n{(proc.stderr or proc.stdout or '').strip()[-2000:]}\n```"
-                        )
-                        st.error(answer)
-                        st.session_state.chat_messages.append(
-                            {
-                                "role": "assistant",
-                                "content": answer,
-                                "raw": raw,
-                                "is_error": True,
-                            }
-                        )
-                    else:
-                        answer = extract_answer(proc.stdout or "")
-                        render_model_answer(answer)
-                        with st.expander("Details"):
-                            st.code(raw.strip() or "(empty)", language="text")
-                        st.session_state.chat_messages.append(
-                            {"role": "assistant", "content": answer, "raw": raw}
-                        )
-                except subprocess.TimeoutExpired:
-                    err = "Timed out: the answer took longer than 10 minutes."
-                    st.error(err)
-                    st.session_state.chat_messages.append(
-                        {"role": "assistant", "content": err, "is_error": True}
-                    )
-                except Exception as exc:  # noqa: BLE001
-                    err = f"Unexpected error: {exc}"
-                    st.error(err)
-                    st.session_state.chat_messages.append(
-                        {"role": "assistant", "content": err, "is_error": True}
-                    )
-
-    if st.session_state.chat_messages and st.button("Clear chat", key="clear_chat"):
-        st.session_state.chat_messages = []
-        st.rerun()
+    # After the first answer, show a follow-up ask box directly under the chat.
+    if st.session_state.chat_messages:
+        st.markdown("#### Ask another question")
+        with st.form("followup_question", clear_on_submit=True):
+            followup = st.text_input(
+                "Your question",
+                placeholder="Type your next career question…",
+                label_visibility="collapsed",
+            )
+            asked = st.form_submit_button("Ask", type="primary")
+        if asked and followup.strip():
+            ask_career_question(followup.strip(), first_question=False)
+        if st.button("Clear chat", key="clear_chat"):
+            st.session_state.chat_messages = []
+            st.session_state.chat_model_ready = False
+            st.rerun()
+    else:
+        question = st.chat_input("Type your career question…")
+        if question:
+            ask_career_question(question.strip(), first_question=first_question)
 
 
 # ---------------------------------------------------------------------------

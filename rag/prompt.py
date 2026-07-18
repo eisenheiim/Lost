@@ -16,6 +16,8 @@ How to answer:
 - If the context lacks enough information, say so briefly instead of guessing.
 - Do not invent roles, paths, requirements, or steps that are not in the context.
 - Be concise, practical, and clear.
+- Keep answers short: prefer 4–8 sentences, or at most 5 short bullets.
+  Do not write long essays or repeat the same point.
 """
 
 USER_PROMPT_TEMPLATE = """Context:
@@ -25,4 +27,5 @@ Question:
 {question}
 
 Answer the question directly using only the relevant parts of the context above.
+Keep it short (a brief paragraph or a few bullets).
 """
