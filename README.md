@@ -1,4 +1,4 @@
-# Career Tree RAG (local)
+# Career Tree RAG (Microsoft AI Innovators Summer Internship)
 
 Are you feeling lost in the world of AI? This is a local career-exploration RAG project, which can help you find your career path. We meticulously designed career tree ourselves which you can check from [https://www.ibz04.pro/blog/career-tree](https://www.ibz04.pro/blog/career-tree).
 
